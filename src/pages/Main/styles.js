@@ -91,9 +91,52 @@ export const List = styled.ul`
             border-top: 1px solid #eee;
         }
 
+        span {
+            flex: 1;
+        }
+
         a {
             color: #0f5959;
             text-decoration: none;
+            margin-left: 20px;
         }
+
+        /*  button {
+            background: #0f5959;
+            border: 0;
+            padding: 10px 10px;
+            margin-left: 10px;
+            border-radius: 4px;
+
+            display: flex;
+            align-items: center;
+        } */
     }
+`;
+
+export const ButtonTable = styled.button.attrs((props) => ({
+    type: 'button',
+    disabled: props.loading,
+}))`
+    background: #0f5959;
+    border: 0;
+    padding: 10px 10px;
+    margin-left: 10px;
+    border-radius: 4px;
+
+    display: flex;
+    align-items: center;
+
+    &[disabled] {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    ${(props) =>
+        props.loading &&
+        css`
+            svg {
+                animation: ${rotate} 2s linear infinite;
+            }
+        `}
 `;

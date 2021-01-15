@@ -1,13 +1,14 @@
+/* eslint-disable no-debugger */
 import React, { Component } from 'react';
 
-import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
+import { FaGithubAlt, FaPlus, FaSpinner, FaTrash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
 
 import api from '../../services/api';
 
 import Container from '../../components/container';
-import { Form, SubmitButton, List, Div } from './styles';
+import { Form, SubmitButton, List, Div, ButtonTable } from './styles';
 
 // export default function Main() {
 //     return (
@@ -24,6 +25,7 @@ export default class Main extends Component {
             newRepo: '',
             repositories: [],
             loading: false,
+            loadingDel: false,
             error: null,
             msgError: '',
         };
@@ -51,6 +53,21 @@ export default class Main extends Component {
         this.setState({ newRepo: e.target.value, error: null, msgError: '' });
     };
 
+    handleDelete = async (e) => {
+        const { repositories } = this.state;
+
+        this.setState({
+            loadingDel: true,
+        });
+
+        setTimeout(() => {
+            this.setState({
+                repositories: repositories.filter((t) => t.name !== e.name),
+                loadingDel: false,
+            });
+        }, 1000);
+    };
+
     handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -59,6 +76,7 @@ export default class Main extends Component {
         try {
             const { newRepo, repositories } = this.state;
 
+            debugger;
             if (newRepo === '') {
                 throw new Error('Você precisa indicar um repositório');
             }
@@ -85,7 +103,14 @@ export default class Main extends Component {
     };
 
     render() {
-        const { newRepo, repositories, loading, error, msgError } = this.state;
+        const {
+            newRepo,
+            repositories,
+            loading,
+            error,
+            msgError,
+            loadingDel,
+        } = this.state;
 
         return (
             <Container>
@@ -117,6 +142,22 @@ export default class Main extends Component {
                     {repositories.map((repository) => (
                         <li key={repository.name}>
                             <span>{repository.name}</span>
+                            <ButtonTable
+                                loading={loadingDel}
+                                onClick={() => this.handleDelete(repository)}
+                            >
+                                {loadingDel ? (
+                                    <FaSpinner color="#FFF" size={18} />
+                                ) : (
+                                    <FaTrash color="#FFF" size={18} />
+                                )}
+                            </ButtonTable>
+                            {/* <button
+                                type="button"
+                                onClick={() => this.handleDelete(repository)}
+                            >
+                                <FaTrash color="#FFF" size={18} />
+                            </button> */}
                             <Link
                                 to={`/repository/${encodeURIComponent(
                                     repository.name
